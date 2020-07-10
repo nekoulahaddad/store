@@ -4,55 +4,56 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require("config");
-const auth = require('../middleware/auth')
+const auth = require('../middleware/auth');
 const Item = require('../models/Item');
 
-// sign up 
-router.post('/',(req,res) => {
-const {name,email,password} = req.body;
-if (!name || !email || !password) {
-return res.status(400).json({msg : "please fill all things"});
-}
-User.findOne({email}).then(user => {
-if (user) return res.status(400).json({msg : "this user is already exist"});
-const newUser = new User({
-	name,
-	email,
-	password
-});
-// tashfeer al password ( mn al mawke3 metl ma hie copy and paste)
-bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(newUser.password, salt, function(err, hash) {
-    if (err) throw err;
-   	newUser.password = hash;
-   	newUser.save()
-   	.then(user => {
-   		jwt.sign({id : user.id},config.get("jwtsecret"),{expiresIn : 3600}, (err,token) => {
-   			if (err) throw err;
-   			res.json({
-   				token,
-   				user : {
-   					id:user.id,
-   					name:user.name,
-   					email:user.email   				
-   				}
+//sign up
+router.post('/', (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        return res.status(400).json({ msg: "please fill all things" });
+    }
+    User.findOne({ email }).then(user => {
+        if (user) return res.status(400).json({ msg: "this user is already exist" });
+        const newUser = new User({
+            name,
+            email,
+            password
+        });
+        // tashfeer al password ( mn al mawke3 metl ma hie copy and paste)
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(newUser.password, salt, function(err, hash) {
+                if (err) throw err;
+                newUser.password = hash;
+                newUser.save()
+                    .then(user => {
+                        jwt.sign({ id: user.id }, config.get("jwtsecret"), { expiresIn: 3600 }, (err, token) => {
+                            if (err) throw err;
+                            res.json({
+                                token,
+                                user: {
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email
+                                }
 
-   			});
-   		})
-   	});
-   })
-})
-})
+                            });
+                        })
+                    });
+            })
+        })
+    })
 });
 
+/*
 //auth, req.user._id
 //Add item to cart
 router.get('/addToCart', (req, res) => {
 
 
-    User.findOne({ _id: "5efb6237ae5dba0d2c5eb041"  }, (err, userInfo) => {
+    User.findOne({ _id: "5efb6237ae5dba0d2c5eb041" }, (err, userInfo) => {
         let duplicate = false;
- 
+
         console.log(userInfo)
 
         userInfo.cart.forEach((item) => {
@@ -61,32 +62,30 @@ router.get('/addToCart', (req, res) => {
             }
         })
 
-//exp of req.query : 
-// GET /search?q=tobi+ferret
-//console.dir(req.query.q)
-// => 'tobi ferret'
+        //exp of req.query : 
+        // GET /search?q=tobi+ferret
+        //console.dir(req.query.q)
+        // => 'tobi ferret'
 
-// GET /shoes?order=desc&shoe[color]=blue&shoe[type]=converse
-//console.dir(req.query.order)
-// => 'desc'
+        // GET /shoes?order=desc&shoe[color]=blue&shoe[type]=converse
+        //console.dir(req.query.order)
+        // => 'desc'
 
-//console.dir(req.query.shoe.color)
-// => 'blue'
+        //console.dir(req.query.shoe.color)
+        // => 'blue'
 
-//console.dir(req.query.shoe.type)
-// => 'converse'
+        //console.dir(req.query.shoe.type)
+        // => 'converse'
 
-// GET /shoes?color[]=blue&color[]=black&color[]=red
-//console.dir(req.query.color)
-// => ['blue', 'black', 'red']
+        // GET /shoes?color[]=blue&color[]=black&color[]=red
+        //console.dir(req.query.color)
+        // => ['blue', 'black', 'red']
 
 
 
 
         if (duplicate) {
-            User.findOneAndUpdate(
-                { _id: "5efb6237ae5dba0d2c5eb041", "cart.id": req.query.productId },
-                { $inc: { "cart.$.quantity": 1 } }, // if i need to increase the quantity i use 1 or 2 or any possitive number and if i need to decrease i use -2 or -4 so a negative number
+            User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041", "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": 1 } }, // if i need to increase the quantity i use 1 or 2 or any possitive number and if i need to decrease i use -2 or -4 so a negative number
                 { new: true },
                 (err, userInfo) => {
                     if (err) return res.json({ success: false, err });
@@ -94,9 +93,7 @@ router.get('/addToCart', (req, res) => {
                 }
             )
         } else {
-            User.findOneAndUpdate(
-                { _id: "5efb6237ae5dba0d2c5eb041" },
-                {
+            User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041" }, {
                     $push: {
                         cart: {
                             id: req.query.productId,
@@ -104,8 +101,7 @@ router.get('/addToCart', (req, res) => {
                             date: new Date().toISOString().replace(/:/g, '-')
                         }
                     }
-                },
-                { new: true },
+                }, { new: true },
                 (err, userInfo) => {
                     if (err) return res.json({ success: false, err });
                     res.status(200).json(userInfo.cart)
@@ -118,23 +114,20 @@ router.get('/addToCart', (req, res) => {
 When true, returns the modified document rather than the original. 
 The findAndModify method ignores the new option for remove operations. 
 The default is false.
-*/
+
 
 
 
 
 //increase the quantity of the items
 router.get('/removeOneFromCart', (req, res) => {
-User.findOneAndUpdate(
-        { _id: "5efb6237ae5dba0d2c5eb041","cart.id": req.query.productId },
-        { $inc: { "cart.$.quantity": -1 } },
-        { new: true },
-        (err,userInfo) => {
-            if(err) return res.json(err);
+    User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041", "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": -1 } }, { new: true },
+        (err, userInfo) => {
+            if (err) return res.json(err);
             res.status(200).json(userInfo.cart)
         }
 
-        )
+    )
 
 });
 
@@ -143,22 +136,19 @@ User.findOneAndUpdate(
 // remove an item from the cart
 router.get('/removeFromCart', (req, res) => {
 
-    User.findOneAndUpdate(
-        { _id: "5efb6237ae5dba0d2c5eb041" },
-        {
-            $pull:            //note: pull and push can be written "$pull" and "$push" and $pull and $push so with and without ""
-                { "cart": { "id": req.query._id } }
-        },
-        { new: true },
+    User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041" }, {
+            $pull: //note: pull and push can be written "$pull" and "$push" and $pull and $push so with and without ""
+            { "cart": { "id": req.query._id } }
+        }, { new: true },
         (err, userInfo) => {
             let cart = userInfo.cart;
-            let array = cart.map(item => {     // al array feha al id tb3 kl al item yly bel cart tb3 al user
+            let array = cart.map(item => { // al array feha al id tb3 kl al item yly bel cart tb3 al user
                 return item.id
             })
 
-            Item.find({ '_id': { $in: array } })   // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
-                .populate('writer')                 // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
-                .exec((err, cartDetail) => {        // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
+            Item.find({ '_id': { $in: array } }) // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
+                .populate('writer') // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
+                .exec((err, cartDetail) => { // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
                     return res.status(200).json({
                         cartDetail,
                         cart
@@ -171,8 +161,7 @@ router.get('/removeFromCart', (req, res) => {
 
 //get cart information
 router.get('/userCartInfo', auth, (req, res) => {
-    User.findOne(
-        { _id: req.user._id },
+    User.findOne({ _id: req.user._id },
         (err, userInfo) => {
             let cart = userInfo.cart;
             let array = cart.map(item => {
@@ -180,7 +169,7 @@ router.get('/userCartInfo', auth, (req, res) => {
             })
 
 
-            Item.find({ '_id': { $in: array } })  // how $in works --> it is like if function --> it activates the call back fun (.populate in our case) --> if the collection 'item' has any of the values that in the 'array' in the _id section --> so in our case it must be true and call back func will be activated
+            Item.find({ '_id': { $in: array } }) // how $in works --> it is like if function --> it activates the call back fun (.populate in our case) --> if the collection 'item' has any of the values that in the 'array' in the _id section --> so in our case it must be true and call back func will be activated
                 .populate('writer')
                 .exec((err, cartDetail) => {
                     if (err) return res.status(400).send(err);
@@ -285,7 +274,7 @@ router.post('/successBuy', (req, res) => {
     )
 })
 
-*/
+
 //without paypal
 router.post('/successBuy', (req, res) => {
     let history = [];
@@ -303,20 +292,17 @@ router.post('/successBuy', (req, res) => {
     })
 
     //2.Put Payment Information that come from Paypal into Payment Collection 
-    transactionData.user = {                      // information about the user
+    transactionData.user = { // information about the user
         id: req.user._id,
         name: req.user.name,
         lastname: req.user.lastname,
         email: req.user.email
     }
 
-    transactionData.product = history              // information about the products that user bought 
+    transactionData.product = history // information about the products that user bought 
 
 
-    User.findOneAndUpdate(
-        { _id: req.user._id },
-        { $push: { history: history }, $set: { cart: [] } },
-        { new: true },
+    User.findOneAndUpdate({ _id: req.user._id }, { $push: { history: history }, $set: { cart: [] } }, { new: true },
         (err, user) => {
             if (err) return res.json({ success: false, err });
 
@@ -339,14 +325,11 @@ router.post('/successBuy', (req, res) => {
                 // second Item  quantity 3
 
                 async.eachSeries(products, (item, callback) => {
-                    Product.update(
-                        { _id: item.id },
-                        {
+                    Product.update({ _id: item.id }, {
                             $inc: {
                                 "sold": item.quantity
                             }
-                        },
-                        { new: false },
+                        }, { new: false },
                         callback
                     )
                 }, (err) => {
@@ -372,8 +355,7 @@ router.post('/successBuy', (req, res) => {
 
 // getting history of the products that i had bought before
 router.get('/getHistory', auth, (req, res) => {
-    User.findOne(
-        { _id: req.user._id },
+    User.findOne({ _id: req.user._id },
         (err, doc) => {
             let history = doc.history;
             if (err) return res.status(400).send(err)
@@ -384,7 +366,7 @@ router.get('/getHistory', auth, (req, res) => {
 
 
 
-
+*/
 
 
 module.exports = router;

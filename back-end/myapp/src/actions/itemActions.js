@@ -21,7 +21,7 @@ dispatch({type:GET_ITEMS,payload:res.data})
 
 export const addItem = item => (dispatch,getState) => {
 
-axios.post('/items',item, tokenConfig(getState))
+axios.post('/items/uploadProduct',item, tokenConfig(getState))
 .then(res => 
 dispatch({type:ADD_ITEM,payload:res.data})
 )
