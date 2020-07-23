@@ -8,17 +8,23 @@ import {
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  REGISTER_FAIL,
+  UPDATE_USER,
+  UPDATE_USER_FAIL,
 } from './types';
+import { useHistory } from "react-router-dom";
 
 
+// for get requests it is so easy 
+// for post and put request i add some variables with the axios.post or axios.put request --> these values is the body 
+//const history = useHistory();
 
-export const loadUser = () => ( dispatch , getState  ) => {
+export const loadUser = () => ( dispatch, getState) => {
 
 dispatch({type:USER_LOADING});
 
 axios
-.get('/auth/user', tokenConfig( getState )) 
+.get('/auth/user',tokenCheck())  
 .then(res => 
 	dispatch({
 		type:USER_LOADED,
@@ -33,9 +39,12 @@ dispatch({
 });
 };
 
+
+
+
 export const register = ({name,email,password}) => (dispatch, getState) => { //note : ({name,email,password}) mo (name,email,password) y3nee jbton k object mnshan heek t7t 7awalton l json
 
-const config = {
+const config = {                             //it always used when post a form,cuz in forms we use json/ and in the data base the data schema is a json
 	headers: {
 		"content-type":"application/json"
 	}
@@ -59,6 +68,31 @@ axios.post('/users', body, config)  // note : hon 2na jebet al config mo al toke
 
 };
 
+export const updateUser = ({name,lastname,email,images}) => (dispatch, getState) => { //note : ({name,email,password}) mo (name,email,password) y3nee jbton k object mnshan heek t7t 7awalton l json
+
+
+const body = JSON.stringify({name,lastname,email,images}); // 7awalet l json .. l2n 2na fo2 3amel {}
+
+axios.put('/users/updateUser', body, tokenConfig(getState))  // note : hon 2na jebet al config mo al tokenconfig
+.then(res => {
+	dispatch({
+		type: UPDATE_USER,
+		payload:res.data
+	})
+})
+.catch(err => { dispatch(returnErrors(err.response.data, err.response.status,'UPDATE_USER_FAIL'));
+	dispatch({
+		type:UPDATE_USER_FAIL
+	});
+
+	});
+
+};
+
+
+
+
+
 export const login = ({email,password}) => dispatch => {
 	const config = {
 		headers: {
@@ -69,13 +103,17 @@ export const login = ({email,password}) => dispatch => {
 	const body = JSON.stringify({email,password});
 
 	axios.post('/auth',body, config)
-	.then(res => dispatch({type:LOGIN_SUCCESS,payload:res.data}))
+	.then(res => { dispatch({type:LOGIN_SUCCESS,payload:res.data}) 
+		//history.push('/');
+	})
 	.catch(err => {
 		dispatch(returnErrors(err.response.data, err.response.status,'LOGIN_FAIL'));
 		dispatch({type:LOGIN_FAIL});
 
 	});
 };
+
+
 
 
 
@@ -107,6 +145,17 @@ export const tokenConfig = getState =>  {
 
     return config;
 
+};
+
+export const tokenCheck = () =>  {
+const token = localStorage.getItem('token');
+
+if (token) {
+    axios.defaults.headers.common['x-auth-token'] = token;
+  } else {
+  	//delete axios.defaults.commons['x-auth-token'];
+    console.log("fuck you");
+  }
 };
 
 

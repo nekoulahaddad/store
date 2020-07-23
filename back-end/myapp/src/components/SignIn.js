@@ -1,10 +1,10 @@
 import React , {Component} from 'react';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Alert,Col } from 'reactstrap';
 import {login} from '../actions/authActions';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {clearErrors} from '../actions/errorActions'
-
+import { useHistory,Redirect } from "react-router-dom";
 
 
 class SignIn extends Component {
@@ -14,6 +14,7 @@ state={
 	msg:null
 };
 
+
 static propTypes = {
   isAuthenticated: PropTypes.bool,
   error: PropTypes.object.isRequired,
@@ -21,6 +22,7 @@ static propTypes = {
   clearErrors: PropTypes.func.isRequired,
   user:PropTypes.object.isRequired
 }
+
 
 componentDidUpdate(prevProps) {
   const {error,isAuthenticated} = this.props;
@@ -31,11 +33,15 @@ componentDidUpdate(prevProps) {
     this.setState({msg:null})
   }
 }
+if (!isAuthenticated){console.log("hi")}
+      else this.props.history.push("/Items");
 }
+
 
 onChange = e => {
   this.setState({ [e.target.name]: e.target.value });
 }
+
 
 onSubmit = e => {
   e.preventDefault();
@@ -49,29 +55,34 @@ this.props.login(User);
 this.props.clearErrors();
 };
 
-
+//history.push('/')
 render() {
 return(
+  <Col md={6}>
   <div>
 {this.state.msg ? (
 <Alert color='danger'>{this.state.msg}</Alert>
 ) : null}
 <div>
+
 { !this.props.isAuthenticated ? (
 <Form className="navor"  onSubmit={this.onSubmit}>
-        <FormGroup>
+        <FormGroup className="mr-3 ml-3">
           <Label for="Email">Email</Label>
           <Input type="email" name="email" id="Email" placeholder="Enter your Email please!" onChange={this.onChange} />
         </FormGroup>
-        <FormGroup>
+        <FormGroup className="mr-3 ml-3">
           <Label for="Password">Password</Label>
           <Input type="password" name="password" id="Password" placeholder="Enter your password please!" onChange={this.onChange} />
         </FormGroup>
-        <Button>Submit</Button>
+        <Button className="mr-3 ml-3">Submit</Button>
  </Form>
- ):(<p>welcome to our shop mr {this.props.user.name}</p>)}
+ ):(<p className="mr-3 ml-3">welcome to our shop mr {this.props.user.name}</p>
+
+ )}
  </div>
  </div>
+ </Col>
 	);
   
 }
@@ -87,3 +98,9 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,{login,clearErrors})(SignIn);
+
+/*
+
+
+
+*/

@@ -31,35 +31,43 @@ toggle = () => {
   }
 
 
+             
 
 render () {
 
 	return (
-
       <Navbar color="dark" dark className="navor" expand="md">
-          <NavbarBrand href="/">syria shop</NavbarBrand>
+          <Nav className="ml-auto" navbar>
+          <NavbarBrand tag={RouterNavLink} to="/">syria shop</NavbarBrand>
+          </Nav>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-            <div>
+                  
             { !this.props.isAuthenticated  ? (
-              <div>
+              <Nav className="ml-auto" navbar>  
               <NavItem>
                <NavLink tag={RouterNavLink}  to="/SignIn">SignIn</NavLink>
+               </NavItem>
+               <NavItem>
+               <NavLink tag={RouterNavLink} to="/SignUp">SignUp</NavLink>
+              </NavItem>
+              </Nav>
+              ):
+              <Nav className="ml-auto" navbar> 
+              <NavItem>
+                <NavLink tag={RouterNavLink} to="/User">Profile</NavLink>
+              </NavItem>
+               <NavItem>
+                <NavLink tag={RouterNavLink} to="/Items">add item</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RouterNavLink} to="/SignUp">SignUp</NavLink>
+              <SignOut />
               </NavItem>
-              </div>
-              ):null}
-            </div>
-              <NavItem>
-                <SignOut />
-              </NavItem>
-               </Nav>
+              </Nav>
+                }
+            
           </Collapse>
         </Navbar>
-
 		)
 }
 

@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 
 const ReplySchema = new Schema({
+    authorId: String,
     parent: Schema.Types.ObjectId,//comment _id
     user: String,
     content: String,
@@ -12,6 +13,7 @@ const ReplySchema = new Schema({
 })    
 
 const CommentSchema = new Schema({
+    authorId: String,
     user: String,
     content: String,
     like: {type: Number, default: 0},
@@ -35,7 +37,8 @@ category : {
     type : String
 },
 images : {
-	type : String
+	type: Array,
+    default: []
 },
 continents: {
     type: Number,
@@ -47,6 +50,9 @@ date : {
 },
 price : {
 	type : Number
+},
+price_sale : {
+    type : Number
 },
 likes :{
     type:Number,

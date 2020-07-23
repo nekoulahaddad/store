@@ -45,15 +45,23 @@ payload:id
 })
 };
 
-export const addComment = (id,comment) => (dispatch) => {
- axios.put(`/items/${id}`,comment)
+export const addComment = (id,{content}) => (dispatch,getState) => {
+const body = JSON.stringify({content});
+
+ axios.post(`/items/${id}/addComment`,body,tokenConfig(getState))
  .then(res=> 
 dispatch({
 type:ADD_COMMENT,
-payload:comment
+payload:res.data
 })
 )
 .catch(err => {
 	dispatch(returnErrors(err.response.data,err.response.status))
 })
 };
+
+
+
+
+
+

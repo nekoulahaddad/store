@@ -19,15 +19,24 @@ password : {
 },
 lastname : {
 	type : String,
+	default: '' ,
 	maxlength : 20
 },
 cart : {
 	type: Array,
 	default: []
 },
-
-image : {
-	type : String
+sex: { 
+	type: String, 
+	default: '' 
+},
+phone: { 
+	type: String, 
+	default: '' 
+},
+images : {
+	type: Array,
+    default: []
 },
 history : {
 	type: Array,
@@ -37,8 +46,7 @@ tokenExp : {
 	type : Number
 },
 date : {
-	type : Date,
-	default : Date.now
+	type : Date
 }
 });
 

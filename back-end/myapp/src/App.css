@@ -11,3 +11,17 @@
 .navor{
 	margin-bottom: 20px;
 }
+
+.batata{
+	margin-right: 20px;
+}
+
+.img_item{
+	height: 300px;
+	width: 300px;
+}
+
+.last_price{
+	text-decoration: line-through !important;
+	color:#696969;
+}

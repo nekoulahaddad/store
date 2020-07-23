@@ -45,7 +45,23 @@ router.post('/', (req, res) => {
     })
 });
 
-/*
+
+router.put("/updateUser",auth,(req,res) => { 
+    const {name,lastname,email,images} = req.body
+    console.log(images)
+User.findOneAndUpdate({_id:req.user.id},
+    {$set:{name,lastname,email,images}},{ new: true }
+    )
+.then(()=> User.findOne({_id:req.user.id})
+.then((user)=> res.json(user))
+.catch((err)=> err.status(500))
+.catch((err)=> res.json(err))
+)
+});
+
+
+
+
 //auth, req.user._id
 //Add item to cart
 router.get('/addToCart', (req, res) => {
@@ -116,7 +132,7 @@ The findAndModify method ignores the new option for remove operations.
 The default is false.
 
 
-
+*/
 
 
 //increase the quantity of the items
@@ -274,7 +290,7 @@ router.post('/successBuy', (req, res) => {
     )
 })
 
-
+*/
 //without paypal
 router.post('/successBuy', (req, res) => {
     let history = [];
@@ -366,7 +382,7 @@ router.get('/getHistory', auth, (req, res) => {
 
 
 
-*/
+
 
 
 module.exports = router;

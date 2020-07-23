@@ -3,7 +3,6 @@ import { GET_ITEMS, ADD_ITEM, DELETE_ITEM, ITEMS_LOADING,ADD_COMMENT } from '../
 const initialState = {
 items: [],
 loading: false,
-comment:''
 }
 
 
@@ -28,7 +27,7 @@ return {
 case ADD_COMMENT:
 return {
 	...state,
-	comment:action.payload
+	items: action.payload
 };
 
 case ITEMS_LOADING:
@@ -38,16 +37,5 @@ return{
 };
 default :
 return state;
-
-
-
-
-
-
 }
-
-
-
-
-
 }
