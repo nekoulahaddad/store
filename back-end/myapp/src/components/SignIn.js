@@ -33,8 +33,8 @@ componentDidUpdate(prevProps) {
     this.setState({msg:null})
   }
 }
-if (!isAuthenticated){console.log("hi")}
-      else this.props.history.push("/Items");
+if (isAuthenticated){this.props.history.push("/Items")}
+      else console.log("hi");
 }
 
 

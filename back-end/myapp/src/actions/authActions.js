@@ -11,6 +11,10 @@ import {
   REGISTER_FAIL,
   UPDATE_USER,
   UPDATE_USER_FAIL,
+  ADD_TO_CART_USER,
+  ADD_TO_CART_FAIL,
+  GET_CART_INFO_FAIL,
+  GET_CART_INFO
 } from './types';
 import { useHistory } from "react-router-dom";
 
@@ -123,6 +127,40 @@ export const logout = () => {    // NOTE : hon ma 7a6eet dispatch l2n she3`le wa
 	};
 	  
 };
+
+
+export const addToCart = (_id) => (dispatch,getState) => {
+
+
+	axios.get(`/users/addToCart?productId=${_id}`,tokenConfig(getState))
+	.then(res => { dispatch({type:ADD_TO_CART_USER,payload:res.data}) 
+		//history.push('/');
+	})
+	.catch(err => {
+		dispatch(returnErrors(err.response.data, err.response.status,'ADD_TO_CART_FAIL'));
+		dispatch({type:ADD_TO_CART_FAIL});
+
+	});
+};
+
+
+export const userCartInfo = () => (dispatch,getState) => {
+
+
+	axios.get('/users/userCartInfo',tokenConfig(getState))
+	.then(res => { dispatch({type:GET_CART_INFO,payload:res.data}) 
+		//history.push('/');
+	})
+	.catch(err => {
+		dispatch(returnErrors(err.response.data, err.response.status,'GET_CART_INFO_FAIL'));
+		dispatch({type:GET_CART_INFO_FAIL});
+
+	});
+};
+
+
+
+
 
 
 

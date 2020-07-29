@@ -8,7 +8,11 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   UPDATE_USER,
-  UPDATE_USER_FAIL
+  UPDATE_USER_FAIL,
+  ADD_TO_CART_FAIL,
+  ADD_TO_CART_USER,
+  GET_CART_INFO_FAIL,
+  GET_CART_INFO
 } from '../actions/types';   // note that in reducers files i didn't import any other files
 
 
@@ -16,7 +20,9 @@ const initialState = {
 	token:localStorage.getItem('token'),
 	isAuthenticated:null,
 	isLoading:false,
-	user:null
+	user:null,
+    cartInfo:null,
+    cart:null
 }
 
 
@@ -40,6 +46,27 @@ export default function(state = initialState,action) {    // note export default
         user:action.payload,
         isLoading:false,
         isAuthenticated:true
+    };
+    case ADD_TO_CART_USER:
+    return {
+        ...state,
+        isLoading:false,
+         cartInfo:action.payload.cartDetail,
+         cart:action.payload.cart
+    };
+     case GET_CART_INFO_FAIL:
+     case ADD_TO_CART_FAIL:
+    return {
+        ...state,
+    };
+        case GET_CART_INFO:
+    return {
+        ...state,
+        isLoading:false,
+        user: {
+        ...state.user,
+        cart:action.payload
+                }
     };
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:

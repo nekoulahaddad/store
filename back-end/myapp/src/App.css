@@ -9,7 +9,7 @@
 
 
 .navor{
-	margin-bottom: 20px;
+	margin-top: 20px;
 }
 
 .batata{
@@ -20,8 +20,18 @@
 	height: 300px;
 	width: 300px;
 }
-
 .last_price{
 	text-decoration: line-through !important;
 	color:#696969;
+}
+
+.btn-link{
+	text-decoration:none !important;
+	color:#28a745;
+	cursor: pointer;
+}
+
+.image_comment{
+	height: 64px;
+	width: 64px;
 }

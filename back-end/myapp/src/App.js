@@ -7,7 +7,9 @@ import {BrowserRouter as Router,Switch,Route,Redirect} from 'react-router-dom';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Profile from './components/Profile';
+import Cart from './components/Cart';
 import Items from './components/Items';
+import Item from './components/Item';
 import Dashboard from './components/Dashboard';
 import RequireAuth from './components/require_auth';
 import {tokenCheck,tokenConfig,loadUser} from './actions/authActions';
@@ -36,7 +38,9 @@ function App() {
       <Route path="/SignUp" component={SignUp} />
       <Route path="/User" component={Profile} /> 
       <Route path="/Items" exact  component={Items} />
-      <Route path="/Dashboard" exact  component={Dashboard} />  
+      <Route path="/Item/:id" exact  component={Item} />
+      <Route path="/Dashboard" exact  component={Dashboard} /> 
+      <Route path="/Cart" component={Cart} /> 
     </Switch>
      </div>
      </Router>

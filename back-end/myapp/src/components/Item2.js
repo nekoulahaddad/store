@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import {addComment, addItem, getItems, deleteItem } from '../actions/itemActions';
 import {addToCart} from '../actions/authActions';
 import PropTypes from 'prop-types';
-import {CustomInput, Col, Row, Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert,Card, CardImg, CardTitle, CardText, CardGroup,
-  CardSubtitle, CardBody,CardDeck,CardColumns } from 'reactstrap';
+import {CustomInput, Col, Row, Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import ReactTimeAgo from 'react-time-ago';
 import FileUpload from './FileUpload';
 import Dropzone from 'react-dropzone';
@@ -65,33 +64,29 @@ class Dashboard extends Component {
             <div>
   { this.props.isAuthenticated ?  (
     
-<CardGroup>
-
+ <React.Fragment>
+ <Row>
             {items.map( (item) => 
-              <Col md={3} sm={6}>
-                <Card className="m-2" key={item._id}>
-                {item.images.length == 0 ? <CardImg className="img_item img-thumbnail"  top width="100%"   src="https://via.placeholder.com/256x186/FFFFFF/000000/?text=syriashop.com" />:null}
+                <ListGroupItem className="m-2" key={item._id}>
+                {item.images.length == 0 ? <img className="img_item" src="https://via.placeholder.com/300x300/FFFFFF/000000/?text=syriashop.com" />:null}
                   {item.images.map((image) => (
                     <div>
-                    <CardImg className="img_item img-thumbnail"   top width="100%" src={img1,image} />
+                    <img className="img_item" src={img1,image} />
                     </div>
                   ))}
-                  <CardBody>
-                  <CardTitle> 
-               <Link className="btn-link" to={{
+                  <div> 
+               <Link to={{
                 pathname:`/item/${item._id}`,
                 query:{item: item}
               }}>{item.name}</Link>
-                  </CardTitle> 
-                  <CardSubtitle>
+                  </div> 
+                  <div>
                   <span className='text-danger mr-3'> Price: {item.price}$ </span> 
                   {item.price_sale ? <span className='last_price'> {item.price_sale}$ </span>:null }
-                   </CardSubtitle>
-                   <CardText>
+                  </div>
                   <a href="#"><i className="fa fa-thumbs-up batata ml-1">{item.likes}</i></a>
                   <a href="#"><i className="fa fa-comments  batata ml-1" aria-hidden="true">{item.comment_count}</i></a>
                   <span><ReactTimeAgo date={item.date} locale="en"/></span>
-                  </CardText>
                           <Button
                       className='fa fa-shopping-cart ml-2'
                       color='success'
@@ -99,13 +94,11 @@ class Dashboard extends Component {
                       onClick={this.onAddToCart.bind(this, item._id)}
                     >
                       <span className='ml-1'>add to cart</span>   
-                      </Button>   
-                  </CardBody>                
-                </Card>
-                </Col>
+                      </Button>                   
+                </ListGroupItem>
           )}
-
-</CardGroup>
+</Row>
+</React.Fragment>
  ):null }
 </div>
         )

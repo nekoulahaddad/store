@@ -36,7 +36,7 @@ toggle = () => {
 render () {
 
 	return (
-      <Navbar color="dark" dark className="navor" expand="md">
+      <Navbar color="dark" dark  expand="md">
           <Nav className="ml-auto" navbar>
           <NavbarBrand tag={RouterNavLink} to="/">syria shop</NavbarBrand>
           </Nav>

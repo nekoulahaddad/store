@@ -1,8 +1,9 @@
-import { GET_ITEMS, ADD_ITEM, DELETE_ITEM, ITEMS_LOADING,ADD_COMMENT } from '../actions/types';
+import { GET_ITEMS, ADD_ITEM, DELETE_ITEM, ITEMS_LOADING,ADD_COMMENT,GET_ITEM,ADD_REPLY } from '../actions/types';
 
 const initialState = {
 items: [],
 loading: false,
+product:{}
 }
 
 
@@ -12,6 +13,12 @@ case GET_ITEMS:
 return {
 ...state,
 items:action.payload,
+loading:false
+};
+case GET_ITEM:
+return {
+...state,
+product:action.payload,
 loading:false
 };
 case DELETE_ITEM:
@@ -27,9 +34,14 @@ return {
 case ADD_COMMENT:
 return {
 	...state,
-	items: action.payload
+	product: action.payload
 };
-
+case ADD_REPLY:
+return {
+...state,
+product:action.payload,
+loading:false
+};
 case ITEMS_LOADING:
 return{
 	...state,
@@ -39,3 +51,24 @@ default :
 return state;
 }
 }
+
+
+
+/*
+
+images:[{0:"5f20a43d6ddd2b11d05e0a28"}],
+likes:1,
+comment_count:1,
+sold:1,
+views:1,
+_id:"5f20a43d6ddd2b11d05e0a28",
+name:"sdsd",
+price:1,
+price_sale:1,
+date: "2020-07-28T23:40:43.194Z",
+category:"Electronics",
+description:"Electronics",
+comment:[{_id:"5f20b262a782e404c4ada45e"}],
+replies:[{_id:"5f20b262a782e404c4ada45e"}]
+
+*/

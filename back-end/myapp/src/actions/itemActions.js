@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ITEMS, ADD_ITEM, DELETE_ITEM, ITEMS_LOADING,ADD_COMMENT } from './types';
+import { GET_ITEMS, ADD_ITEM, DELETE_ITEM, ITEMS_LOADING,ADD_COMMENT,GET_ITEM,ADD_REPLY } from './types';
 import {returnErrors} from './errorActions';
 import {tokenConfig} from './authActions';
 
@@ -45,6 +45,27 @@ payload:id
 })
 };
 
+
+export const getItem = id => (dispatch,getState) => {
+dispatch({type:ITEMS_LOADING});
+ axios.get(`/items/${id}`,tokenConfig(getState))
+ .then(res=> 
+dispatch({
+type:GET_ITEM,
+payload:res.data
+})
+)
+.catch(err => {
+	dispatch(returnErrors(err.response.data,err.response.status))
+})
+};
+
+
+
+
+
+
+
 export const addComment = (id,{content}) => (dispatch,getState) => {
 const body = JSON.stringify({content});
 
@@ -52,6 +73,21 @@ const body = JSON.stringify({content});
  .then(res=> 
 dispatch({
 type:ADD_COMMENT,
+payload:res.data
+})
+)
+.catch(err => {
+	dispatch(returnErrors(err.response.data,err.response.status))
+})
+};
+
+export const addReply = (id,_id,{Reply_content}) => (dispatch,getState) => {
+const body = JSON.stringify({Reply_content});
+
+ axios.post(`/items/addReply/${id}?CommentId=${_id}`,body,tokenConfig(getState))
+ .then(res=> 
+dispatch({
+type:ADD_REPLY,
 payload:res.data
 })
 )

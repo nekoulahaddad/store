@@ -125,7 +125,9 @@ class Items extends Component {
            <Col className="mb-2" md={4}>
            <Progress percentage={this.state.uploadPercentage} />
            </Col>
-           <img className="img_item mb-2 mr-3 ml-3" src="https://via.placeholder.com/300x300" id="image-preview" />  
+           <Col md={4}>
+           <img className="img-fluid" src="https://via.placeholder.com/300x300" id="image-preview" />  
+           </Col>
            <br/>        
            <Button type="button" className="mr-3 ml-3" onClick={this.onClickHandler}>Upload Image</Button> 
         </FormGroup> 
@@ -144,8 +146,8 @@ class Items extends Component {
         </Col>
         <Col md={4}>
         <FormGroup className="mr-3 ml-3">
-          <Label for="price_sale" className="mr-sm-2">Price after sale</Label>
-          <Input required type="number" name="price_sale" id="price_sale" onChange={this.onChange} />
+          <Label for="price_sale" className="mr-sm-2">Price without sale</Label>
+          <Input  type="number" name="price_sale" id="price_sale" onChange={this.onChange} />
         </FormGroup>
         </Col>
       

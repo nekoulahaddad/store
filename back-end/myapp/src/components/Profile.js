@@ -28,32 +28,49 @@ state = {
   };
 
 static propTypes = {
+isLoading:PropTypes.bool,
 isAuthenticated:PropTypes.bool,
 loadUser:PropTypes.func.isRequired,
 error: PropTypes.object.isRequired,
 clearErrors: PropTypes.func.isRequired,
 user: PropTypes.object.isRequired,
-updateUser:PropTypes.func.isRequired
+updateUser:PropTypes.func.isRequired,
 };
 
 
 componentDidMount() {
-    this.props.loadUser()
-    const { name,email,lastname} = this.props.user;
+this.props.loadUser()
+this.onFetchUser()
+  };
+
+
+onFetchUser = () => {
+  const img1 = "http://localhost:5000/";
+      const user = this.props.user;
+      if (user) {
+          const { name,email,lastname,images} = user;
     document.getElementById("name").value = name;
     document.getElementById("lastname").value = lastname;
     document.getElementById("email").value = email;
+    if (user.images){
+    document.getElementById("image-preview").src = `${img1}${images[0]}`;
+  } else document.getElementById("image-preview").src = "https://www.cobdoglaps.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile.jpg";
     this.setState({
       name:document.getElementById("name").value,
       lastname:document.getElementById("lastname").value,
-      email:document.getElementById("email").value
+      email:document.getElementById("email").value,
+      images:document.getElementById("image-preview").src
   })
-  };
+   } else console.log("and batata")
+}
+
+
+
+
 
 
 
 onChangeHandler = event => {
-        console.log(event.target.files[0])
         this.setState({
             selectedFile: event.target.files[0],
             loaded: 0,
@@ -84,7 +101,6 @@ onClickHandler = () => {
                 this.setState(prevState => ({
                     Images: [...prevState.Images, response.data.image]
                 }))
-                console.log("hi")
 
             } else {
                 console.log('Failed to save the Image in Server')
@@ -107,7 +123,7 @@ onChange = e => {
       email:this.state.email,
       images: this.state.Images
     };
-
+    console.log(this.state.name,this.state.Images)
     // Add item via addItem action
     this.props.updateUser(new_User);
 };
@@ -117,38 +133,40 @@ render() {
  // const { user } = this.props.user;
         return (
           
-            <div>
+            <div className="container-fluid">
 {this.state.msg ? (
 <Alert color='danger'>{this.state.msg}</Alert>
 ) : null}
 <div>
 { this.props.isAuthenticated ? (
-<Form className="navor mr-3 ml-3" onSubmit={this.onSubmit} id="update-user-form">
-<FormGroup>
+<Form className="navor" onSubmit={this.onSubmit} id="update-user-form">
+<FormGroup >
    <Col className="mb-2" md={4}>
    <CustomInput type="file" name="file" onChange={this.onChangeHandler} id="create-file-form"/>
    </Col>
    <Col className="mb-2" md={4}>
    <Progress percentage={this.state.uploadPercentage} />
    </Col>
-   <img className="rounded-circle img_item mb-2 mr-3 ml-3" src="https://via.placeholder.com/300x300" id="image-preview" />  
+   <Col md={4}>
+   <img className="img-fluid rounded-circle"  id="image-preview" />  
+   </Col>
    <br/>        
    <Button type="button" className="mr-3 ml-3" onClick={this.onClickHandler}>Upload Image</Button> 
 </FormGroup> 
-<FormGroup >
+<FormGroup className="mr-3 ml-3">
   <Label for="name">Name</Label>
   <Input required type="text" name="name" id="name" onChange={this.onChange} />
 </FormGroup> 
-<FormGroup>
+<FormGroup className="mr-3 ml-3">
   <Label for="lastname">lastName</Label>
   <Input required type="text" name="lastname" id="lastname"  onChange={this.onChange} />
 </FormGroup> 
-<FormGroup>
+<FormGroup className="mr-3 ml-3">
   <Label for="email">Email</Label>
-  <Input isRequired type="email" name="email" id="email" onChange={this.onChange} />
+  <Input type="email" name="email" id="email" onChange={this.onChange} />
 </FormGroup>
 <FormGroup>
-<Button>Submit</Button>
+<Button className="mr-3 ml-3">Submit</Button>
 </FormGroup> 
 </Form>
 ):(<p>please login</p>)}
@@ -162,7 +180,8 @@ render() {
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     error: state.error,
-    user: state.auth.user
+    user: state.auth.user,
+    isLoading: state.auth.isLoading
 });
 
 

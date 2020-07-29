@@ -48,7 +48,11 @@ router.post('/', (req, res) => {
 
 router.put("/updateUser",auth,(req,res) => { 
     const {name,lastname,email,images} = req.body
-    console.log(images)
+       if (!name || !email) {
+      return res.status(422).json({
+        message: 'name, email are  required.'
+      });
+    }
 User.findOneAndUpdate({_id:req.user.id},
     {$set:{name,lastname,email,images}},{ new: true }
     )
@@ -64,13 +68,13 @@ User.findOneAndUpdate({_id:req.user.id},
 
 //auth, req.user._id
 //Add item to cart
-router.get('/addToCart', (req, res) => {
+router.get('/addToCart',auth, (req, res) => {
 
 
-    User.findOne({ _id: "5efb6237ae5dba0d2c5eb041" }, (err, userInfo) => {
+    User.findOne({ _id:req.user.id }, (err, userInfo) => {
         let duplicate = false;
 
-        console.log(userInfo)
+        //console.log(userInfo)
 
         userInfo.cart.forEach((item) => {
             if (item.id == req.query.productId) { // req query it is what after ? in the link like 
@@ -101,7 +105,7 @@ router.get('/addToCart', (req, res) => {
 
 
         if (duplicate) {
-            User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041", "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": 1 } }, // if i need to increase the quantity i use 1 or 2 or any possitive number and if i need to decrease i use -2 or -4 so a negative number
+            User.findOneAndUpdate({ _id:req.user.id, "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": 1 } }, // if i need to increase the quantity i use 1 or 2 or any possitive number and if i need to decrease i use -2 or -4 so a negative number
                 { new: true },
                 (err, userInfo) => {
                     if (err) return res.json({ success: false, err });
@@ -109,7 +113,7 @@ router.get('/addToCart', (req, res) => {
                 }
             )
         } else {
-            User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041" }, {
+            User.findOneAndUpdate({ _id:req.user.id }, {
                     $push: {
                         cart: {
                             id: req.query.productId,
@@ -137,7 +141,7 @@ The default is false.
 
 //increase the quantity of the items
 router.get('/removeOneFromCart', (req, res) => {
-    User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041", "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": -1 } }, { new: true },
+    User.findOneAndUpdate({ _id: req.user.id, "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": -1 } }, { new: true },
         (err, userInfo) => {
             if (err) return res.json(err);
             res.status(200).json(userInfo.cart)
@@ -152,7 +156,7 @@ router.get('/removeOneFromCart', (req, res) => {
 // remove an item from the cart
 router.get('/removeFromCart', (req, res) => {
 
-    User.findOneAndUpdate({ _id: "5efb6237ae5dba0d2c5eb041" }, {
+    User.findOneAndUpdate({ _id: req.user.id }, {
             $pull: //note: pull and push can be written "$pull" and "$push" and $pull and $push so with and without ""
             { "cart": { "id": req.query._id } }
         }, { new: true },
@@ -176,25 +180,22 @@ router.get('/removeFromCart', (req, res) => {
 
 
 //get cart information
-router.get('/userCartInfo', auth, (req, res) => {
-    User.findOne({ _id: req.user._id },
+router.get('/userCartInfo',auth, (req, res) => {
+    User.findOne({ _id: req.user.id },
         (err, userInfo) => {
             let cart = userInfo.cart;
             let array = cart.map(item => {
                 return item.id
             })
-
-
-            Item.find({ '_id': { $in: array } }) // how $in works --> it is like if function --> it activates the call back fun (.populate in our case) --> if the collection 'item' has any of the values that in the 'array' in the _id section --> so in our case it must be true and call back func will be activated
-                .populate('writer')
-                .exec((err, cartDetail) => {
+ Item.find({ "_id": { $in: array } }) // how $in works --> it is like if function --> it activates the call back fun (.populate in our case) --> if the collection 'item' has any of the values that in the 'array' in the _id section --> so in our case it must be true and call back func will be activated
+                ,(err, cartDetail) => {
                     if (err) return res.status(400).send(err);
                     return res.status(200).json({ success: true, cartDetail, cart }) // cart detail it must be the items that we bought with the information of the used that we pushed in by the func "populate"
-                })
-
+                    }
         }
     )
 })
+
 
 /*
 populate and exec it used to push all the information about a model to another model using the id for example and using 'ref' in the Schema

@@ -81,7 +81,7 @@ router.post("/uploadProduct", auth,  (req, res) => {
 // feny 23mlha yadawy 2no
 //const {name,price,description} = req.body
 //if (!name || !price || !description) { 23mel shee w 2za kelon mawjoden 23mel shee tany bs bet5ayal fee maktabe bteshte3`el hal she3`el }
-router.put("/:id/editPost",(req,res) => {
+router.put("/editPost/:id",(req,res) => {
     const {name,price,description} = req.body
 Item.findByIdAndUpdate({_id:req.params.id},
     {$set:{name,description,price}},{ new: true }
@@ -95,7 +95,7 @@ Item.findByIdAndUpdate({_id:req.params.id},
 
 
 //like or dislike
-router.get("/:id/like",(req,res) => {
+router.get("/like/:id",(req,res) => {
 Item.findOneAndUpdate({_id:req.params.id},
     {$inc:{likes:1}}
     )
@@ -107,6 +107,14 @@ Item.findOneAndUpdate({_id:req.params.id},
 });
 
 
+router.get('/:id',(req,res) => {
+Item.findById(req.params.id)
+.then(item => res.json(item))
+.catch(err => res.status(404).json({success:false}))
+});
+
+
+
 router.delete('/:id',(req,res) => {
 Item.findById(req.params.id)
 .then(item => item.remove().then(() => res.json({success:true})))
@@ -115,7 +123,7 @@ Item.findById(req.params.id)
 
 
 //edit comment
-router.put('/:id/editComment',(req,res) => {
+router.put('/editComment/:id',(req,res) => {
 	const {content} = req.body;
 	Item.findOneAndUpdate({_id:req.params.id,"comment._id":req.query.CommentId},
         {
@@ -142,12 +150,12 @@ router.post('/:id/addComment',auth,(req,res) => {
     }
     Item.findByIdAndUpdate({_id:req.params.id},
         {
-        $push:{comment: {user:user.name,content:content}},
+        $push:{comment: {user:user.name,user_image:user.images[0],content:content}},
         $inc:{comment_count:1}
 },
 
 )
-    .then(() => Item.find()
+    .then(() => Item.findById(req.params.id)
         .then(item=>res.json(item))
         .catch(err=>err.status(500)))
     .catch(err => res.json(err)) 
@@ -156,14 +164,19 @@ router.post('/:id/addComment',auth,(req,res) => {
 
 
 //add Replies
-router.post('/:id/addReply',(req,res) => {
-   const {content} = req.body;
+router.post('/addReply/:id',auth,(req,res) => {
+    
+    User.findById(req.user.id,
+    (err, userInfo) => {
+    if (err) return res.json({ success: false, err });
+    const user = userInfo
+   const {Reply_content} = req.body;
     //const {name} = req.user;
     Item.findByIdAndUpdate(
         {_id:req.params.id},
         {$push:
             {
-        replies: {parent:req.query.CommentId,user:"name",content:content}
+        replies: {parent:req.query.CommentId,authorId:user._id,user_image:user.images[0],user:user.name,content:Reply_content}
 }
 },(err,items)=>{
     if (err) return res.json(err);
@@ -178,7 +191,7 @@ router.post('/:id/addReply',(req,res) => {
                 } //https://docs.mongodb.com/manual/reference/operator/update/positional/
             )
 })
-});
+})});
 
 
 

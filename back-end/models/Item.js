@@ -7,6 +7,7 @@ const ReplySchema = new Schema({
     authorId: String,
     parent: Schema.Types.ObjectId,//comment _id
     user: String,
+    user_image:String,
     content: String,
     like: {type: Number, default: 0},
     date: {type: Date, default: Date.now}
@@ -16,6 +17,7 @@ const CommentSchema = new Schema({
     authorId: String,
     user: String,
     content: String,
+    user_image:String,
     like: {type: Number, default: 0},
     date: {type: Date, default:Date.now },
     reply_count: {type: Number, default: 0}
