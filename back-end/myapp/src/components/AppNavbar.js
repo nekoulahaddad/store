@@ -57,8 +57,14 @@ render () {
               <NavItem>
                 <NavLink tag={RouterNavLink} to="/User">Profile</NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink tag={RouterNavLink} to="/ChangePassword">Change Password</NavLink>
+              </NavItem>
                <NavItem>
                 <NavLink tag={RouterNavLink} to="/Items">add item</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={RouterNavLink} to="/Cart">Cart</NavLink>
               </NavItem>
               <NavItem>
               <SignOut />

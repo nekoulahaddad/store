@@ -20,13 +20,16 @@ const CommentSchema = new Schema({
     user_image:String,
     like: {type: Number, default: 0},
     date: {type: Date, default:Date.now },
-    reply_count: {type: Number, default: 0}
+    reply_count: {type: Number, default: 0},
+    replies:{
+    type: Array,
+    default: []}
 })    
 
 const ItemsSchema = new Schema({
 writer: {
         type: Schema.Types.ObjectId,        // if i need to get more info go to link https://mongoosejs.com/docs/populate.html
-        ref: 'User'
+        ref: 'user'
     },
 name : {
 	type : String,

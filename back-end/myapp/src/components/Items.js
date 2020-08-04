@@ -88,13 +88,16 @@ class Items extends Component {
 
     onSubmit = e => {
         e.preventDefault();
+        console.log(this.props.user.id)
         const newItem = {
+            writer:this.props.user.id,
             name: this.state.name,
             price: this.state.price,
             price_sale: this.state.price_sale,
             images: this.state.Images,
             category: this.state.category,
-            description: this.state.description
+            description: this.state.description,
+            user:PropTypes.object.isRequired
         };
 
         // Add item via addItem action
@@ -183,7 +186,8 @@ class Items extends Component {
 
 const mapStateToProps = state => ({
     item: state.item,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    user:state.auth.user
 });
 
 

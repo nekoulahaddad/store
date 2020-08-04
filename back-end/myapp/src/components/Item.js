@@ -1,15 +1,15 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
-import {addReply, addComment, addItem, getItem, deleteItem } from '../actions/itemActions';
-import {addToCart} from '../actions/authActions';
+import { addReply, addComment, addItem, getItem, deleteItem } from '../actions/itemActions';
+import { addToCart } from '../actions/authActions';
 import PropTypes from 'prop-types';
-import {UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, CustomInput, Col, Row, Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert} from 'reactstrap';
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, CustomInput, Col, Row, Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import ReactTimeAgo from 'react-time-ago';
 import FileUpload from './FileUpload';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import Progress from './Progress';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 class Item extends Component {
@@ -18,8 +18,9 @@ class Item extends Component {
         modal: false,
         content: '',
         id: '',
-        Reply_content:'',
-        show_reply:false
+        Reply_content: '',
+        show_reply: false,
+        ShowAndHideReply: false
     };
 
     static propTypes = {
@@ -29,8 +30,8 @@ class Item extends Component {
         deleteItem: PropTypes.func.isRequired,
         item: PropTypes.object.isRequired,
         addComment: PropTypes.func.isRequired,
-        addReply:PropTypes.func.isRequired,
-        addToCart:PropTypes.func.isRequired
+        addReply: PropTypes.func.isRequired,
+        addToCart: PropTypes.func.isRequired
     };
 
 
@@ -41,17 +42,18 @@ class Item extends Component {
 
     onDeleteClick = id => {
         this.props.deleteItem(id);
-        this.props.history.push("/Items")
+        this.props.history.push("/Dashboard")
     };
 
     onAddToCart = id => {
-        this.props. addToCart(id);
+        this.props.addToCart(id);
     };
 
 
     onChange = e => {
         this.setState({
-            [e.target.name]: e.target.value });
+            [e.target.name]: e.target.value
+        });
     };
 
     Comment = id => {
@@ -60,21 +62,29 @@ class Item extends Component {
         document.getElementById("comment").value = "";
     }
 
-    Reply = (id,_id) => {
+    Reply = (id, _id) => {
         const { Reply_content } = this.state;
-        this.props.addReply(id,_id, { Reply_content });
-        document.getElementById("reply").value = "";
+        this.props.addReply(id, _id, { Reply_content });
+        document.getElementById(_id + "2").value = "";
     }
 
 
     ShowAndHide = (id) => {
-      console.log(id)
-      this.setState({show_reply:!this.state.show_reply})
-      if(!this.state.show_reply){
-         document.getElementById(id).className = 'd-block'
-      } else document.getElementById(id).className = 'd-none'
-}
+        console.log(id)
+        this.setState({ show_reply: !this.state.show_reply })
+        if (this.state.show_reply) {
+            document.getElementById(id).className = 'd-block'
+        } else document.getElementById(id).className = 'd-none'
+    }
 
+    ShowAndHideReply = (id) => {
+        const Id = id + "1";
+        console.log(id)
+        this.setState({ show_reply: !this.state.show_reply })
+        if (this.state.show_reply) {
+            document.getElementById(Id).className = 'd-block'
+        } else document.getElementById(Id).className = 'd-none'
+    }
 
 
 
@@ -82,9 +92,10 @@ class Item extends Component {
     //toString()
 
     render() {
-        const  item  = this.props.item.product;
+        const item = this.props.item.product;
         const img1 = "http://localhost:5000/";
-        const img3 = "uploads/2020-07-28T23-21-47.249Z_channels.jpg"
+        const img3 = "uploads/2020-07-28T23-21-47.249Z_channels.jpg";
+        const img4 = "https://www.cobdoglaps.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile.jpg";
         return (
             <div>
   {!this.props.loading && this.props.isAuthenticated ?  (
@@ -145,15 +156,19 @@ class Item extends Component {
                         <div>
                        {item.comment.map( (comment) => ( 
                           <div className='ml-1 pb-2 border-bottom mb-2' key={comment._id}>
+                          {!comment.user_image ? <img className="image_comment rounded-circle" src={img4} />:(<span> 
+                          {comment.user_image.length == 0 ? <img className="image_comment rounded-circle" src={img4} />:null}
                             <span> <img className="image_comment rounded-circle" src={`${img1}${comment.user_image}`} /> </span>
+                            </span>)}
                            <span className="font-weight-bold">{comment.user}</span> {comment.content} 
                        <div className="small"> 
                           <span className="font-weight-light"><ReactTimeAgo date={comment.date} locale="en"/></span>
                           <span className="btn-link ml-3">{comment.reply_count} replies</span>
                           <i onClick={this.ShowAndHide.bind(this,comment._id)} className="btn-link ml-3">add reply</i>
+                          <i onClick={this.ShowAndHideReply.bind(this,comment._id)} className="btn-link ml-3">show replies</i>
                        </div> 
                      <div className="d-none" id={comment._id}>  
-                    <Input className='mb-2 mt-2' type="text" name="Reply_content" id="reply" ref="fieldComment" onChange={this.onChange} />
+                    <Input className='mb-2 mt-2' type="text" name="Reply_content" id={`${comment._id}2`} ref="fieldComment" onChange={this.onChange} />
                     <Button
                       color='primary'
                       size='sm'
@@ -162,7 +177,25 @@ class Item extends Component {
                       <span className='ml-1'>reply</span>
                       </Button>
                     </div>
-
+                    <div className="d-none" id={`${comment._id}1`}>
+                    
+                    {comment.replies ? (
+                      <div className="mt-2 ml-3 smaller">
+                      {comment.replies.map((reply) => (
+                        <div className='ml-1 pb-1 border-bottom mb-1' key={reply._id}>
+                        {!reply.user_image ? <img className="image_comment rounded-circle" src={img4} />:(
+                            <span> 
+                            <span> <img className="image_comment rounded-circle" src={`${img1}${reply.user_image}`} /> </span>
+                            </span>)}                       
+                           <span className="font-weight-bold">{reply.user}</span><span> {reply.content}</span>        
+                            <div className="small"> 
+                          <span className="font-weight-light"><ReactTimeAgo date={reply.date} locale="en"/></span>
+                            </div>
+                        </div>
+                        ))}
+                      </div>
+                      ):null}
+                    </div>
                           </div> ))}
                        
                        </div>
@@ -180,8 +213,8 @@ class Item extends Component {
 const mapStateToProps = state => ({
     item: state.item,
     isAuthenticated: state.auth.isAuthenticated,
-    loading:state.item.loading
+    loading: state.item.loading
 });
 
 
-export default connect(mapStateToProps, {addReply, addToCart, addComment, getItem, addItem, deleteItem })(Item)
+export default connect(mapStateToProps, { addReply, addToCart, addComment, getItem, addItem, deleteItem })(Item)

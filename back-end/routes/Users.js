@@ -63,6 +63,52 @@ User.findOneAndUpdate({_id:req.user.id},
 )
 });
 
+router.put("/changePassword",auth,(req,res) => { 
+const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+  User.findById(req.user.id,
+    (err, userInfo) => {
+    if (err) return res.json({ success: false, err });
+    const user = userInfo
+
+  // Compare passwords - Does the user provide correct old password?
+  bcrypt.compare(oldPassword,user.password, function(err, isMatch) {
+
+    if (err) res.send({msg:'mo zabta'});
+
+    if (!isMatch) {
+      return res.status(422).send({ msg: 'You old password is incorrect! Please try again.' })
+    }
+
+    if (oldPassword === newPassword) {
+      return res.status(422).send({ msg: 'Your new password must be different from your old password!' });
+    }
+
+    // Update password
+    user.password = newPassword;
+
+bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(user.password, salt, function(err, hash) {
+                if (err) throw err;
+                user.password = hash;
+
+    // Save to DB
+    user.save(function(err,user) {
+     if (err) throw err;
+
+      // Respond user request indicating that the password was updated successfully
+      res.json(user);
+
+    });
+  });
+})
+})
+})
+});
+
+
+
+
 
 
 
@@ -140,7 +186,7 @@ The default is false.
 
 
 //increase the quantity of the items
-router.get('/removeOneFromCart', (req, res) => {
+router.get('/removeOneFromCart',auth, (req, res) => {
     User.findOneAndUpdate({ _id: req.user.id, "cart.id": req.query.productId }, { $inc: { "cart.$.quantity": -1 } }, { new: true },
         (err, userInfo) => {
             if (err) return res.json(err);
@@ -154,7 +200,7 @@ router.get('/removeOneFromCart', (req, res) => {
 
 
 // remove an item from the cart
-router.get('/removeFromCart', (req, res) => {
+router.get('/removeFromCart',auth, (req, res) => {
 
     User.findOneAndUpdate({ _id: req.user.id }, {
             $pull: //note: pull and push can be written "$pull" and "$push" and $pull and $push so with and without ""
@@ -182,20 +228,23 @@ router.get('/removeFromCart', (req, res) => {
 //get cart information
 router.get('/userCartInfo',auth, (req, res) => {
     User.findOne({ _id: req.user.id },
-        (err, userInfo) => {
-            let cart = userInfo.cart;
+        (err, user) => {
+            if (err) return res.status(404).send(err);
+            let cart = user.cart;
             let array = cart.map(item => {
                 return item.id
-            })
- Item.find({ "_id": { $in: array } }) // how $in works --> it is like if function --> it activates the call back fun (.populate in our case) --> if the collection 'item' has any of the values that in the 'array' in the _id section --> so in our case it must be true and call back func will be activated
-                ,(err, cartDetail) => {
+            });
+
+ Item.find({ _id: { $in: array } }) // how $in works --> it is like if function --> it activates the call back fun (.populate in our case) --> if the collection 'item' has any of the values that in the 'array' in the _id section --> so in our case it must be true and call back func will be activated
+              .populate('writer')
+                .exec((err, cartDetail) => {
                     if (err) return res.status(400).send(err);
-                    return res.status(200).json({ success: true, cartDetail, cart }) // cart detail it must be the items that we bought with the information of the used that we pushed in by the func "populate"
-                    }
+                    return res.status(200).json({ cartDetail, cart})
+                })
+
         }
     )
 })
-
 
 /*
 populate and exec it used to push all the information about a model to another model using the id for example and using 'ref' in the Schema

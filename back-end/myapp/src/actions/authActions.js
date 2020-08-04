@@ -14,7 +14,11 @@ import {
   ADD_TO_CART_USER,
   ADD_TO_CART_FAIL,
   GET_CART_INFO_FAIL,
-  GET_CART_INFO
+  GET_CART_INFO,
+  CHANGE_PASSWORD_FAIL,
+  CHANGE_PASSWORD,
+  REMOVE_ONE_FROM_CART_FAIL,
+  REMOVE_ONE_FROM_CART
 } from './types';
 import { useHistory } from "react-router-dom";
 
@@ -94,7 +98,19 @@ axios.put('/users/updateUser', body, tokenConfig(getState))  // note : hon 2na j
 };
 
 
+export const changePassword = ({oldPassword,newPassword}) => (dispatch, getState) => {
 
+	const body = JSON.stringify({oldPassword,newPassword});
+
+	axios.put('/users/changePassword',body, tokenConfig(getState))
+	.then(res => { dispatch({type:CHANGE_PASSWORD,payload:res.data}) 
+	})
+	.catch(err => {
+		dispatch(returnErrors(err.response.data, err.response.status,'CHANGE_PASSWORD_FAIL'));
+		dispatch({type:CHANGE_PASSWORD_FAIL});
+
+	});
+};
 
 
 export const login = ({email,password}) => dispatch => {
@@ -143,17 +159,16 @@ export const addToCart = (_id) => (dispatch,getState) => {
 	});
 };
 
+export const removeOneFromCart = (_id) => (dispatch,getState) => {
 
-export const userCartInfo = () => (dispatch,getState) => {
 
-
-	axios.get('/users/userCartInfo',tokenConfig(getState))
-	.then(res => { dispatch({type:GET_CART_INFO,payload:res.data}) 
+	axios.get(`/users/removeOneFromCart?productId=${_id}`,tokenConfig(getState))
+	.then(res => { dispatch({type:REMOVE_ONE_FROM_CART,payload:res.data}) 
 		//history.push('/');
 	})
 	.catch(err => {
-		dispatch(returnErrors(err.response.data, err.response.status,'GET_CART_INFO_FAIL'));
-		dispatch({type:GET_CART_INFO_FAIL});
+		dispatch(returnErrors(err.response.data, err.response.status,'REMOVE_ONE_FROM_CART_FAIL'));
+		dispatch({type:REMOVE_ONE_FROM_CART_FAIL});
 
 	});
 };
@@ -162,6 +177,31 @@ export const userCartInfo = () => (dispatch,getState) => {
 
 
 
+
+
+
+export const userCartInfo = () => (dispatch,getState) => {
+	axios.get('/users/userCartInfo',tokenConfig(getState))
+	.then(res => { 
+					   res.data.cart.forEach(cartItem => {
+                res.data.cartDetail.forEach((cartDetail, i) => {
+                    if (cartItem.id === cartDetail._id) {
+                        res.data.cartDetail[i].quantity = cartItem.quantity;
+                    }
+                })
+            })
+
+
+
+
+		dispatch({type:GET_CART_INFO,payload:res.data}) 
+	})
+	.catch(err => {
+		dispatch(returnErrors(err.response.data, err.response.status,'GET_CART_INFO_FAIL'));
+		dispatch({type:GET_CART_INFO_FAIL});
+
+	});
+};
 
 
 

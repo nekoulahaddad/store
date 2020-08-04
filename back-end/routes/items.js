@@ -182,7 +182,9 @@ router.post('/addReply/:id',auth,(req,res) => {
     if (err) return res.json(err);
     Item.findOneAndUpdate(
                 { _id: req.params.id, "comment._id": req.query.CommentId },
-                { $inc: { "comment.$.reply_count": 1 } },
+                { $inc: { "comment.$.reply_count": 1 },
+                $push:{"comment.$.replies": {parent:req.query.CommentId,authorId:user._id,user_image:user.images[0],user:user.name,content:Reply_content,date: Date.now() }}
+                 },
                 (err,item)=>{
                     if (err) return res.json(err);
                     Item.findById(req.params.id)
@@ -192,6 +194,19 @@ router.post('/addReply/:id',auth,(req,res) => {
             )
 })
 })});
+
+
+
+router.get('/addReply/:id',(req,res) => {   
+    Item.find(
+                { _id: req.params.id, "replies.parent": req.query.CommentId },
+                (err,item)=>{
+                    if (err) return res.json(err);
+                    res.status(200).json(item)
+                } //https://docs.mongodb.com/manual/reference/operator/update/positional/
+            )
+});
+
 
 
 

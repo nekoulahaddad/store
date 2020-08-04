@@ -11,6 +11,7 @@ import Cart from './components/Cart';
 import Items from './components/Items';
 import Item from './components/Item';
 import Dashboard from './components/Dashboard';
+import ChangePassword from './components/ChangePassword';
 import RequireAuth from './components/require_auth';
 import {tokenCheck,tokenConfig,loadUser} from './actions/authActions';
 
@@ -41,6 +42,7 @@ function App() {
       <Route path="/Item/:id" exact  component={Item} />
       <Route path="/Dashboard" exact  component={Dashboard} /> 
       <Route path="/Cart" component={Cart} /> 
+      <Route path="/ChangePassword" component={ChangePassword} />
     </Switch>
      </div>
      </Router>

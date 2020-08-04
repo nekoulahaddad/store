@@ -12,7 +12,11 @@ import {
   ADD_TO_CART_FAIL,
   ADD_TO_CART_USER,
   GET_CART_INFO_FAIL,
-  GET_CART_INFO
+  GET_CART_INFO,
+  CHANGE_PASSWORD_FAIL,
+  CHANGE_PASSWORD,
+   REMOVE_ONE_FROM_CART_FAIL,
+  REMOVE_ONE_FROM_CART
 } from '../actions/types';   // note that in reducers files i didn't import any other files
 
 
@@ -21,8 +25,7 @@ const initialState = {
 	isAuthenticated:null,
 	isLoading:false,
 	user:null,
-    cartInfo:null,
-    cart:null
+  cartInfo:null
 }
 
 
@@ -47,19 +50,36 @@ export default function(state = initialState,action) {    // note export default
         isLoading:false,
         isAuthenticated:true
     };
-    case ADD_TO_CART_USER:
+    case CHANGE_PASSWORD:
+    return {
+        ...state,
+        user:action.payload,
+        isLoading:false,
+        isAuthenticated:true
+    };
+    case GET_CART_INFO:
     return {
         ...state,
         isLoading:false,
-         cartInfo:action.payload.cartDetail,
-         cart:action.payload.cart
+        cartInfo:action.payload
     };
+     case REMOVE_ONE_FROM_CART_FAIL:
+     case CHANGE_PASSWORD_FAIL:
      case GET_CART_INFO_FAIL:
      case ADD_TO_CART_FAIL:
     return {
         ...state,
     };
-        case GET_CART_INFO:
+    case ADD_TO_CART_USER:
+    return {
+        ...state,
+        isLoading:false,
+        user: {
+        ...state.user,
+        cart:action.payload
+                }
+    };
+    case REMOVE_ONE_FROM_CART:
     return {
         ...state,
         isLoading:false,
