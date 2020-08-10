@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const items = require("./routes/items");
 const users = require("./routes/Users");
 const auth = require("./routes/auth");
+const path = require('path')
 
 const app = express();
 
@@ -21,6 +22,18 @@ app.use("/auth", auth);
 app.use('/uploads', express.static('uploads'));
 
 //app.use(cors()) // hie mnshan ma yetla3 cors errors (7eyalla sha5es ye2der yfoot 3la al api)
+
+
+if (process.env.NODE_ENV === 'production') {
+	app.use('*',(req,res) => {
+		res.sendFile(path.resolve(_dirname,'myapp','build','index.html'));
+	})
+
+
+
+}
+
+
 
 
 

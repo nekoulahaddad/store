@@ -18,8 +18,8 @@ render() {
 	return (
 <div>
 <Fragment>
-<NavLink tag={RouterNavLink} to="/" onClick={this.props.logout} >
-Logout
+<NavLink className="fa fa-sign-out mt-1" tag={RouterNavLink} to="/" onClick={this.props.logout} >
+<span className="ml-1">Logout</span>
 </NavLink>
 </Fragment>
 </div>

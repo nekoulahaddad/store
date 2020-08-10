@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Row,Col, Button, Form, FormGroup, Label, Input, FormText, Alert } from 'reactstrap';
+import {Container,Row,UncontrolledAlert,Col, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { register } from '../actions/authActions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
-import Cover from './Cover';
-
+import  sign from '../cover/sign3.png';
 
 class SignUp extends Component {
     state = {
@@ -25,7 +24,7 @@ class SignUp extends Component {
 
 
     componentDidUpdate(prevProps) {
-        const { error, isAuthenticated } = this.props;
+        const { error} = this.props;
         if (error !== prevProps.error) { // y3nee 2no ma ykoon null masalan
             if (error.id === 'REGISTER_FAIL') {
                 this.setState({ msg: error.msg.msg }); // if you open redux web tools .. you will see that the msg is stored if error.msg.msg
@@ -57,32 +56,44 @@ class SignUp extends Component {
 
     render() {
         return (
-            <Col md={6}>
+            
             <div>
 {this.state.msg ? (
 <Alert color='danger'>{this.state.msg}</Alert>
 ) : null}
 <div>
 { !this.props.isAuthenticated ? (
+    <Container>
+<Row>
+<Col className="align-self-center" md={6}>
 <Form className="navor" onSubmit={this.onSubmit}>
-<FormGroup className="mr-3 ml-3">
+<FormGroup className="mr-3">
+  <i class="fa fa-user icon mr-1"></i>
   <Label for="name">Name</Label>
   <Input type="text" name="name" id="name" placeholder=" Whats your name !" onChange={this.onChange} />
 </FormGroup>  
-<FormGroup className="mr-3 ml-3">
+<FormGroup className="mr-3">
+  <i class="fa fa-envelope icon mr-1"></i>
   <Label for="email">Email</Label>
   <Input type="email" name="email" id="email" placeholder="Enter your email please !" onChange={this.onChange} />
 </FormGroup>
-<FormGroup className="mr-3 ml-3">
+<FormGroup className="mr-3">
+  <i class="fa fa-key icon mr-1"></i>
   <Label for="password">Password</Label>
   <Input type="password" name="password" id="password" placeholder="Enter your password please !" onChange={this.onChange} />
 </FormGroup> 
-<Button className="mr-3 ml-3">Submit</Button>
+<Button className="mr-3">Submit</Button>
 </Form>
-):(<p className="mr-3 ml-3"> welcome {this.props.user.name}  .... you are a member now</p>)}
+</Col>
+<Col md={6} className="d-none d-sm-block">
+ <img alt="sign" className="sign_pic" src={sign} />
+ </Col>
+ </Row>
+ </Container>
+):(<div className="mt-3"><UncontrolledAlert color="info">welcome {this.props.user.name}  .... you are a member now</UncontrolledAlert></div>)}
  </div>
 </div>
-</Col>
+
         );
 
     }

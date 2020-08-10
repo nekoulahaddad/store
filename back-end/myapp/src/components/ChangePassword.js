@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {changePassword} from '../actions/authActions';
 import PropTypes from 'prop-types';
-import {CustomInput,Col, Row,Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-import {clearErrors} from '../actions/errorActions'
-import axios from 'axios';
+import {Col, Row,Container,UncontrolledAlert, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import {clearErrors} from '../actions/errorActions';
+import  password_pic from '../cover/password.png';
 
 class ChangePassword extends Component {
 
@@ -24,7 +24,7 @@ changePassword:PropTypes.func.isRequired
 
 
 componentDidUpdate(prevProps) {
-  const {error,isAuthenticated} = this.props;
+  const {error} = this.props;
   if (error !== prevProps.error) { // y3nee 2no ma ykoon null masalan
     if (error.id === 'CHANGE_PASSWORD_FAIL') {
       this.setState({ msg:error.msg.msg }); // if you open redux web tools .. you will see that the msg is stored if error.msg.msg
@@ -48,26 +48,39 @@ onChange = e => {
 
 render() {
         return (
-          
+          <div>
+{this.state.msg ? (
+<Alert color='danger'>{this.state.msg}</Alert>
+) : null} 
             <div className="container-fluid">
 {this.state.msg ? (
 <Alert color='danger'>{this.state.msg}</Alert>
 ) : null}
 <div>
 { this.props.isAuthenticated ? (
+  <Container>
+  <Row>
+  <Col className="align-self-center" md={6}>
   <Form className="navor"  onSubmit={this.onSubmit}>
-         <FormGroup className="mr-3 ml-3">
+         <FormGroup className="mr-3">
           <Label for="oldPassword">old Password</Label>
           <Input type="password" name="oldPassword" id="oldPassword" placeholder="Enter your old password password please!" onChange={this.onChange} />
         </FormGroup>
-        <FormGroup className="mr-3 ml-3">
+        <FormGroup className="mr-3">
           <Label for="newPassword">new Password</Label>
           <Input type="password" name="newPassword" id="newPassword" placeholder="Enter your new password please!" onChange={this.onChange} />
         </FormGroup>
-        <Button className="mr-3 ml-3">Submit</Button>
+        <Button className="mr-3">Submit</Button>
  </Form>
-):(<p>please login</p>)}
+ </Col>
+ <Col md={6} className="d-none d-sm-block">
+ <img alt="pass" className="sign_pic" src={password_pic} />
+ </Col>
+ </Row>
+ </Container>
+):(<div className="mt-3"><UncontrolledAlert color="info">Please! Log in to continue</UncontrolledAlert></div>)}
  </div>
+</div>
 </div>
         );
     }

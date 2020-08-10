@@ -7,11 +7,13 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm start --prefix myapp",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild":"NPM_CONFIG_PRODUCTION=false npm install --prefix myapp && npm run build --prefix myapp"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "async": "^3.2.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^5.2.0",
     "config": "^3.3.1",

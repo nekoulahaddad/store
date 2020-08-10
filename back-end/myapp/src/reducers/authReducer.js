@@ -15,8 +15,12 @@ import {
   GET_CART_INFO,
   CHANGE_PASSWORD_FAIL,
   CHANGE_PASSWORD,
-   REMOVE_ONE_FROM_CART_FAIL,
-  REMOVE_ONE_FROM_CART
+  REMOVE_ONE_FROM_CART_FAIL,
+  REMOVE_ONE_FROM_CART,
+  REMOVE_FROM_CART_FAIL,
+  REMOVE_FROM_CART,
+  SUCCESS_BUY_FAIL,
+  SUCCESS_BUY
 } from '../actions/types';   // note that in reducers files i didn't import any other files
 
 
@@ -57,12 +61,21 @@ export default function(state = initialState,action) {    // note export default
         isLoading:false,
         isAuthenticated:true
     };
+    case SUCCESS_BUY:
     case GET_CART_INFO:
     return {
         ...state,
         isLoading:false,
         cartInfo:action.payload
     };
+    case REMOVE_FROM_CART:
+    return {
+        ...state,
+        isLoading:false,
+        cartInfo:action.payload
+    };
+     case SUCCESS_BUY_FAIL:
+     case REMOVE_FROM_CART_FAIL:
      case REMOVE_ONE_FROM_CART_FAIL:
      case CHANGE_PASSWORD_FAIL:
      case GET_CART_INFO_FAIL:

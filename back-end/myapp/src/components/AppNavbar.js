@@ -38,7 +38,7 @@ render () {
 	return (
       <Navbar color="dark" dark  expand="md">
           <Nav className="ml-auto" navbar>
-          <NavbarBrand tag={RouterNavLink} to="/">syria shop</NavbarBrand>
+          <NavbarBrand tag={RouterNavLink} to="/Landing">My shop</NavbarBrand>
           </Nav>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
@@ -55,16 +55,19 @@ render () {
               ):
               <Nav className="ml-auto" navbar> 
               <NavItem>
-                <NavLink tag={RouterNavLink} to="/User">Profile</NavLink>
+                <NavLink className="fa fa-user mt-1" tag={RouterNavLink} to="/User"><span className="ml-1">Profile</span></NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RouterNavLink} to="/ChangePassword">Change Password</NavLink>
+                <NavLink className="fa fa-key mt-1" tag={RouterNavLink} to="/ChangePassword"><span className="ml-1">Change Password</span></NavLink>
               </NavItem>
                <NavItem>
-                <NavLink tag={RouterNavLink} to="/Items">add item</NavLink>
+                <NavLink className="fa fa-plus mt-1" tag={RouterNavLink} to="/Items"><span className="ml-1">Add item</span></NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RouterNavLink} to="/Cart">Cart</NavLink>
+                <NavLink className="fa fa-shopping-cart mt-1" tag={RouterNavLink} to="/Cart"><span className="ml-1">Cart</span> </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className="fa fa-history mt-1" tag={RouterNavLink} to="/History"><span className="ml-1">History</span> </NavLink>
               </NavItem>
               <NavItem>
               <SignOut />

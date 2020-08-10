@@ -1,12 +1,9 @@
-import React, {Component,useState } from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {loadUser,updateUser} from '../actions/authActions';
 import PropTypes from 'prop-types';
-import {CustomInput,Col, Row,Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-import FileUpload from './FileUpload';
-import Dropzone from 'react-dropzone';
+import {CustomInput,Col, Button, Form, FormGroup, Label, Input, Alert,UncontrolledAlert } from 'reactstrap';
 import {clearErrors} from '../actions/errorActions'
-import { withRouter } from "react-router-dom";
 import axios from 'axios';
 import Progress from './Progress';
 
@@ -33,7 +30,7 @@ isAuthenticated:PropTypes.bool,
 loadUser:PropTypes.func.isRequired,
 error: PropTypes.object.isRequired,
 clearErrors: PropTypes.func.isRequired,
-user: PropTypes.object.isRequired,
+user: PropTypes.object,
 updateUser:PropTypes.func.isRequired,
 };
 
@@ -134,7 +131,7 @@ render() {
         return (
           
             <div className="container-fluid">
-{this.state.msg ? (
+{this.state.msg  ? (
 <Alert color='danger'>{this.state.msg}</Alert>
 ) : null}
 <div>
@@ -148,7 +145,7 @@ render() {
    <Progress percentage={this.state.uploadPercentage} />
    </Col>
    <Col md={4}>
-   <img className="img-fluid rounded-circle"  id="image-preview" />  
+   <img alt="profile pic" className="img-fluid rounded-circle"  id="image-preview" />  
    </Col>
    <br/>        
    <Button type="button" className="mr-3 ml-3" onClick={this.onClickHandler}>Upload Image</Button> 
@@ -166,10 +163,10 @@ render() {
   <Input type="email" name="email" id="email" onChange={this.onChange} />
 </FormGroup>
 <FormGroup>
-<Button className="mr-3 ml-3">Submit</Button>
+<Button className="mr-3 ml-3">UPDATE PROFILE</Button>
 </FormGroup> 
 </Form>
-):(<p>please login</p>)}
+):(<div className="mt-3"><UncontrolledAlert color="info">Please! Log in to continue</UncontrolledAlert></div>)}
  </div>
 </div>
         );

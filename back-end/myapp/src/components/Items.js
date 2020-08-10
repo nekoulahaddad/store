@@ -1,11 +1,8 @@
-import React, { Component, useState } from 'react';
+import React, { Component} from 'react';
 import { connect } from 'react-redux';
 import { addItem } from '../actions/itemActions';
 import PropTypes from 'prop-types';
-import { CustomInput,FormFeedback, Col, Row, Container, ListGroup, ListGroupItem, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-import ReactTimeAgo from 'react-time-ago';
-import FileUpload from './FileUpload';
-import Dropzone from 'react-dropzone';
+import { CustomInput, Col, Row,  Button, Form, FormGroup, Label, Input, Alert,UncontrolledAlert } from 'reactstrap';
 import axios from 'axios';
 import Progress from './Progress';
 
@@ -88,9 +85,9 @@ class Items extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        console.log(this.props.user.id)
+        console.log(this.props.user._id,this.props.user.id)
         const newItem = {
-            writer:this.props.user.id,
+            writer:this.props.user._id || this.props.user.id,
             name: this.state.name,
             price: this.state.price,
             price_sale: this.state.price_sale,
@@ -114,9 +111,11 @@ class Items extends Component {
     //toString()
 
     render() {
-        const { items } = this.props.item;
-        const img1 = "http://localhost:5000/"
         return (
+            <div>
+            {this.state.msg ? (
+<Alert color='danger'>{this.state.msg}</Alert>
+) : null}
             <div>
   { this.props.isAuthenticated ?  (
     <React.Fragment>
@@ -129,7 +128,7 @@ class Items extends Component {
            <Progress percentage={this.state.uploadPercentage} />
            </Col>
            <Col md={4}>
-           <img className="img-fluid" src="https://via.placeholder.com/300x300" id="image-preview" />  
+           <img alt="item" className="img-fluid" src="https://via.placeholder.com/300x300" id="image-preview" />  
            </Col>
            <br/>        
            <Button type="button" className="mr-3 ml-3" onClick={this.onClickHandler}>Upload Image</Button> 
@@ -176,7 +175,8 @@ class Items extends Component {
  </Form> 
     </React.Fragment>
  
- ):null }
+ ):(<div className="mt-3"><UncontrolledAlert color="info">Please! Log in to continue</UncontrolledAlert></div>)}
+</div>
 </div>
         )
     }

@@ -1,10 +1,10 @@
 import React , {Component} from 'react';
-import { Button, Form, FormGroup, Label, Input, Alert,Col } from 'reactstrap';
+import {Container,Row, Button, Form, FormGroup, Label, Input, Alert,Col } from 'reactstrap';
 import {login} from '../actions/authActions';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {clearErrors} from '../actions/errorActions'
-import { useHistory,Redirect } from "react-router-dom";
+import  sign2 from '../cover/sign2.png';
 
 
 class SignIn extends Component {
@@ -20,7 +20,7 @@ static propTypes = {
   error: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
-  user:PropTypes.object.isRequired
+  user:PropTypes.object
 }
 
 
@@ -33,7 +33,7 @@ componentDidUpdate(prevProps) {
     this.setState({msg:null})
   }
 }
-if (isAuthenticated){this.props.history.push("/Items")}
+if (isAuthenticated){this.props.history.push("/Landing")}
       else console.log("hi");
 }
 
@@ -58,7 +58,7 @@ this.props.clearErrors();
 //history.push('/')
 render() {
 return(
-  <Col md={6}>
+  
   <div>
 {this.state.msg ? (
 <Alert color='danger'>{this.state.msg}</Alert>
@@ -66,23 +66,34 @@ return(
 <div>
 
 { !this.props.isAuthenticated ? (
+  <Container>
+  <Row>
+  <Col className="align-self-center" md={6}>
 <Form className="navor"  onSubmit={this.onSubmit}>
-        <FormGroup className="mr-3 ml-3">
+        <FormGroup className="mr-3">
+          <i className="fa fa-envelope icon mr-1"></i>
           <Label for="Email">Email</Label>
           <Input type="email" name="email" id="Email" placeholder="Enter your Email please!" onChange={this.onChange} />
         </FormGroup>
-        <FormGroup className="mr-3 ml-3">
-          <Label for="Password">Password</Label>
-          <Input type="password" name="password" id="Password" placeholder="Enter your password please!" onChange={this.onChange} />
+        <FormGroup className="mr-3">
+          <i className="fa fa-key icon mr-1"></i>
+          <Label for="Password">Password</Label>          
+          <Input type="password" name="password" id="Password" placeholder="Enter your password please!" onChange={this.onChange} />        
         </FormGroup>
-        <Button className="mr-3 ml-3">Submit</Button>
+        <Button className="mr-3">Submit</Button>
  </Form>
- ):(<p className="mr-3 ml-3">welcome to our shop mr {this.props.user.name}</p>
+ </Col>
+ <Col md={6} className="d-none d-sm-block">
+ <img alt="sign" className="sign_pic" src={sign2} />
+ </Col>
+ </Row>
+ </Container>
+ ):(<Alert>welcome to our shop mr {this.props.user.name}</Alert>
 
  )}
  </div>
  </div>
- </Col>
+ 
 	);
   
 }

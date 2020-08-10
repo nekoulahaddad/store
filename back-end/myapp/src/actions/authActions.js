@@ -18,9 +18,12 @@ import {
   CHANGE_PASSWORD_FAIL,
   CHANGE_PASSWORD,
   REMOVE_ONE_FROM_CART_FAIL,
-  REMOVE_ONE_FROM_CART
+  REMOVE_ONE_FROM_CART,
+  REMOVE_FROM_CART_FAIL,
+  REMOVE_FROM_CART,
+  SUCCESS_BUY_FAIL,
+  SUCCESS_BUY
 } from './types';
-import { useHistory } from "react-router-dom";
 
 
 // for get requests it is so easy 
@@ -173,6 +176,19 @@ export const removeOneFromCart = (_id) => (dispatch,getState) => {
 	});
 };
 
+export const removeFromCart = (_id) => (dispatch,getState) => {
+
+
+	axios.get(`/users/removeFromCart?productId=${_id}`,tokenConfig(getState))
+	.then(res => { dispatch({type:REMOVE_FROM_CART,payload:res.data}) 
+		//history.push('/');
+	})
+	.catch(err => {
+		dispatch(returnErrors(err.response.data, err.response.status,'REMOVE_FROM_CART_FAIL'));
+		dispatch({type:REMOVE_FROM_CART_FAIL});
+
+	});
+};
 
 
 
@@ -181,6 +197,7 @@ export const removeOneFromCart = (_id) => (dispatch,getState) => {
 
 
 export const userCartInfo = () => (dispatch,getState) => {
+	dispatch({type:USER_LOADING});
 	axios.get('/users/userCartInfo',tokenConfig(getState))
 	.then(res => { 
 					   res.data.cart.forEach(cartItem => {
@@ -203,7 +220,26 @@ export const userCartInfo = () => (dispatch,getState) => {
 	});
 };
 
+export const successBuy = (variables) => (dispatch,getState) => {
+	axios.post('/users/successBuy',variables,tokenConfig(getState))
+	.then(res => { 
+				res.data.cart.forEach(cartItem => {
+                res.data.cartDetail.forEach((cartDetail, i) => {
+                    if (cartItem.id === cartDetail._id) {
+                        res.data.cartDetail[i].quantity = cartItem.quantity;
+                    }
+                })
+            })
 
+
+		dispatch({type:SUCCESS_BUY,payload:res.data}) 
+	})
+	.catch(err => {
+		dispatch(returnErrors(err.response.data, err.response.status,'SUCCESS_BUY_FAIL'));
+		dispatch({type:SUCCESS_BUY_FAIL});
+
+	});
+};
 
 
 
