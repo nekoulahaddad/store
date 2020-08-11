@@ -3,14 +3,18 @@ const mongoose = require("mongoose");
 const items = require("./routes/items");
 const users = require("./routes/Users");
 const auth = require("./routes/auth");
-const path = require('path')
+const path = require('path');
+const cors = require('cors');
+
 
 const app = express();
+
+const db = require("./config/index").MONGO_URI
 
 app.use(express.json());
 
 mongoose
-    .connect("mongodb://localhost/mernapp", {useNewUrlParser: true, useCreateIndex: true})
+    .connect(db, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology:true})
     .then(() => console.log("the database is ready to use ..."))
     .catch((err) => console.log(err));
 
@@ -21,7 +25,7 @@ app.use("/auth", auth);
 //https://stackoverflow.com/questions/48914987/send-image-path-from-node-js-express-server-to-react-client
 app.use('/uploads', express.static('uploads'));
 
-//app.use(cors()) // hie mnshan ma yetla3 cors errors (7eyalla sha5es ye2der yfoot 3la al api)
+app.use(cors()) // hie mnshan ma yetla3 cors errors (7eyalla sha5es ye2der yfoot 3la al api)
 
 
 if (process.env.NODE_ENV === 'production') {

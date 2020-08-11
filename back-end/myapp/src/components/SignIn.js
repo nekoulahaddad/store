@@ -1,10 +1,11 @@
 import React , {Component} from 'react';
-import {Container,Row, Button, Form, FormGroup, Label, Input, Alert,Col } from 'reactstrap';
+import {Container,Row, Button, Form, FormGroup, Label, Input, Alert,Col,NavLink } from 'reactstrap';
 import {login} from '../actions/authActions';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {clearErrors} from '../actions/errorActions'
 import  sign2 from '../cover/sign2.png';
+import {NavLink as RouterNavLink} from 'react-router-dom';
 
 
 class SignIn extends Component {
@@ -80,7 +81,8 @@ return(
           <Label for="Password">Password</Label>          
           <Input type="password" name="password" id="Password" placeholder="Enter your password please!" onChange={this.onChange} />        
         </FormGroup>
-        <Button className="mr-3">Submit</Button>
+        <Row className="ml-0">
+        <span><Button className="mr-3">Submit</Button></span> <span> <NavLink tag={RouterNavLink} to="/SignUp">or ... Sign Up if you don't have an account</NavLink> </span></Row>
  </Form>
  </Col>
  <Col md={6} className="d-none d-sm-block">
