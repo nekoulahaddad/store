@@ -6,7 +6,6 @@ const auth = require("./routes/auth");
 const path = require('path');
 const cors = require('cors');
 
-
 const app = express();
 
 const db = require("./config/index").MONGO_URI
